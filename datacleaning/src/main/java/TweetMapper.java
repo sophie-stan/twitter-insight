@@ -5,6 +5,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TweetMapper extends Mapper<LongWritable, Text, LongWritable, TweetWritable> {
 
@@ -19,23 +22,31 @@ public class TweetMapper extends Mapper<LongWritable, Text, LongWritable, TweetW
 
             JSONObject user = jsonObject.getJSONObject("user");
             String userName = user.getString("name");
+            long userId = user.getLong("id");
             int followersCount = user.getInt("followers_count");
 
             boolean isRT = Utils.getJSONObjectOrNull(jsonObject, "retweeted_status") != null;
             int retweetCount = jsonObject.getInt("retweet_count");
 
-            JSONObject entities = jsonObject.getJSONObject("entities");
-            String[] hashtags = Utils.toStringArray(entities.getJSONArray("hashtags"));
+            ArrayList<String> hashtags = new ArrayList<>();
+
+            Matcher matcher = Pattern.compile("#\\s*(\\w+)").matcher(text);
+            while (matcher.find()) {
+                hashtags.add(matcher.group(1));
+            }
+
+            String[] arrayHashtags = hashtags.toArray(new String[0]);
 
             context.write(new LongWritable(id),
                     new TweetWritable(id,
                             timestamp,
                             text,
+                            userId,
                             userName,
                             followersCount,
                             isRT,
                             retweetCount,
-                            hashtags
+                            arrayHashtags
                     ));
         } catch (JSONException e) {
             System.out.println("Something went wrong while parsing");

@@ -80,4 +80,8 @@ public class TweetWritable implements Writable, Cloneable {
     public String[] getHashtags() {
         return hashtags;
     }
+
+    public long getUserId() {
+        return userId;
+    }
 }

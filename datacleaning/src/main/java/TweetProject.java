@@ -1,10 +1,3 @@
-/**
- * @original author
- * Sophie Stan & Deborah Perreira
- * @modified by
- * David Auber
- */
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -14,21 +7,27 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
+/**
+ * @original author
+ * Sophie Stan & Deborah Perreira
+ * @modified by David Auber
+ */
+
 public class TweetProject {
 
     public static void main(String[] args) throws Exception {
 
         Configuration conf = new Configuration();
 
-        Job job = Job.getInstance(conf, "TweetProject");
+        Job job = Job.getInstance(conf, "DataCleaning.TweetProject");
         job.setJarByClass(TweetProject.class);
         job.setMapperClass(TweetMapper.class);
         /*
-         * Map will generate 4,6Mo for each bloc of 128Mo that leeds to 4555 small blocs
-         * We must merge (128 / 4,6) small blocs to have one bloc of good size.
+         * Map will generate 4,4Mo for each bloc of 128Mo that leeds to 4556 small blocs
+         * We must merge (128 / 4,4) small blocs to have one bloc of good size.
          */
-        int nbNewBlocs = (int) Math.ceil(4555 / (128 / 4.6));
-        job.setNumReduceTasks(nbNewBlocs); // We are only concentrating on the Mapper
+        int nbNewBlocs = (int) Math.ceil(4556 / (128 / 4.5));
+        job.setNumReduceTasks(nbNewBlocs);
         job.setReducerClass(TweetReducer.class);
 
         job.setOutputKeyClass(LongWritable.class);

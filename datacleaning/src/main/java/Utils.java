@@ -1,13 +1,14 @@
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 /**
  * @original author
  * Sophie Stan & Deborah Perreira
  */
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 public final class Utils {
+
     public static JSONObject getJSONObjectOrNull(JSONObject jsonObject, String key) {
         if (jsonObject.has(key)) {
             try {

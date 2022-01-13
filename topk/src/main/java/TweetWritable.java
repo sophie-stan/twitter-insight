@@ -1,10 +1,3 @@
-/**
- * @original author
- * Sophie Stan & Deborah Perreira
- * @modified by
- * David Auber
- */
-
 import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;
@@ -13,12 +6,18 @@ import java.io.IOException;
 
 import static org.apache.hadoop.io.WritableUtils.*;
 
+/**
+ * @original author
+ * Sophie Stan & Deborah Perreira
+ * @modified by David Auber
+ */
+
 public class TweetWritable implements Writable, Cloneable {
     long id;
     long timestamp;
     String text;
+    long userId;
     String userName;
-    // TODO: add userId
     int followersCount;
     boolean isRT;
     int retweetCount;
@@ -27,11 +26,12 @@ public class TweetWritable implements Writable, Cloneable {
     public TweetWritable() {
     }
 
-    public TweetWritable(long id, long timestamp, String text, String userName, int followersCount,
+    public TweetWritable(long id, long timestamp, String text, long userId, String userName, int followersCount,
                          boolean isRT, int retweetCount, String[] hashtags) {
         this.id = id;
         this.timestamp = timestamp;
         this.text = text;
+        this.userId = userId;
         this.userName = userName;
         this.followersCount = followersCount;
         this.isRT = isRT;
@@ -56,6 +56,7 @@ public class TweetWritable implements Writable, Cloneable {
         id = in.readLong();
         timestamp = in.readLong();
         text = readString(in);
+        userId = in.readLong();
         userName = readString(in);
         followersCount = in.readInt();
         isRT = in.readBoolean();
@@ -68,10 +69,15 @@ public class TweetWritable implements Writable, Cloneable {
         out.writeLong(id);
         out.writeLong(timestamp);
         writeString(out, text);
+        out.writeLong(userId);
         writeString(out, userName);
         out.writeInt(followersCount);
         out.writeBoolean(isRT);
         out.writeInt(retweetCount);
         writeStringArray(out, hashtags);
+    }
+
+    public String getText() {
+        return text;
     }
 }

@@ -10,17 +10,21 @@ public class TopHashtag {
 
     private static final int K = 10;
 
-    public static class MapClass extends Mapper<LongWritable, Text, Text, Text> {
+    public static class MapClass extends Mapper<Text, LongWritable, Text, LongWritable> { // Intwritable ?
 
-        private final TreeMap<Integer, Text> TopKMap = new TreeMap<>();
+        private final TreeMap<Text, LongWritable> TopKMap = new TreeMap<>();
 
-        public void map(LongWritable key, Text value, Context context) {
+        public void map(Text key, LongWritable value, Context context) {
+            TopKMap.put(key, value);
 
+            if (TopKMap.size() > K) {
+                TopKMap.remove(TopKMap.firstKey());
+            }
         }
 
         protected void cleanup(Context context) throws IOException, InterruptedException {
-            for (Integer k : TopKMap.keySet()) {
-                context.write(new Text(k.toString()), TopKMap.get(k));
+            for (Text hashtag : TopKMap.keySet()) {
+                context.write(hashtag, TopKMap.get(hashtag));
             }
         }
     }
@@ -37,7 +41,6 @@ public class TopHashtag {
                     TopKMap.remove(TopKMap.firstKey());
                 }
             }
-
         }
 
         @Override

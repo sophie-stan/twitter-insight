@@ -24,11 +24,17 @@ public class HashtagTop {
 
     public static class MapClass extends Mapper<Text, IntWritable, Text, IntWritable> {
         private final TreeMap<Integer, String> TopKMap = new TreeMap<>(Collections.reverseOrder());
+        private int k;
+
+        @Override
+        public void setup(Context context) {
+            k = context.getConfiguration().getInt("k", K);
+        }
 
         @Override
         public void map(Text hashtag, IntWritable count, Context context) {
             TopKMap.put(count.get(), hashtag.toString());
-            if (TopKMap.size() > K) {
+            if (TopKMap.size() > k) {
                 TopKMap.remove(TopKMap.lastKey());
             }
         }
@@ -42,12 +48,18 @@ public class HashtagTop {
 
     public static class ReduceClass extends Reducer<Text, IntWritable, Text, IntWritable> {
         private final TreeMap<Integer, String> TopKMap = new TreeMap<>(Collections.reverseOrder());
+        private int k;
+
+        @Override
+        public void setup(Context context) {
+            k = context.getConfiguration().getInt("k", K);
+        }
 
         @Override
         public void reduce(Text hashtag, Iterable<IntWritable> values, Context context) {
             for (IntWritable count : values) {
                 TopKMap.put(count.get(), hashtag.toString());
-                if (TopKMap.size() > K) {
+                if (TopKMap.size() > k) {
                     TopKMap.remove(TopKMap.lastKey());
                 }
             }
@@ -63,7 +75,8 @@ public class HashtagTop {
     public static void main(String[] args) throws Exception {
 
         if (args.length < 3) {
-            System.out.println("Usage: [sequenceFileInput] [output/input] [textOutput]");
+            System.out.println("Usage: cleantweets > hashtagcount > hashtagtop [K]");
+            System.exit(1);
         }
 
         /* JOB 1 */
@@ -89,6 +102,10 @@ public class HashtagTop {
 
         /* JOB 2 */
         Configuration conf2 = new Configuration();
+        try {
+            conf2.setInt("k", Integer.parseInt(args[3]));
+        } catch (Exception ignored) {
+        }
 
         Job job = Job.getInstance(conf2, "TopHashtag");
         job.setJarByClass(HashtagTop.class);

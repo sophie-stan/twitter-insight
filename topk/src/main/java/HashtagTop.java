@@ -13,6 +13,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.reduce.IntSumReducer;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -22,13 +23,13 @@ public class HashtagTop {
     private static final int K = 10;
 
     public static class MapClass extends Mapper<Text, IntWritable, Text, IntWritable> {
-        private final TreeMap<Integer, String> TopKMap = new TreeMap<>();
+        private final TreeMap<Integer, String> TopKMap = new TreeMap<>(Collections.reverseOrder());
 
         @Override
         public void map(Text hashtag, IntWritable count, Context context) {
             TopKMap.put(count.get(), hashtag.toString());
             if (TopKMap.size() > K) {
-                TopKMap.remove(TopKMap.firstKey());
+                TopKMap.remove(TopKMap.lastKey());
             }
         }
 
@@ -40,14 +41,14 @@ public class HashtagTop {
     }
 
     public static class ReduceClass extends Reducer<Text, IntWritable, Text, IntWritable> {
-        private final TreeMap<Integer, String> TopKMap = new TreeMap<>();
+        private final TreeMap<Integer, String> TopKMap = new TreeMap<>(Collections.reverseOrder());
 
         @Override
         public void reduce(Text hashtag, Iterable<IntWritable> values, Context context) {
             for (IntWritable count : values) {
                 TopKMap.put(count.get(), hashtag.toString());
                 if (TopKMap.size() > K) {
-                    TopKMap.remove(TopKMap.firstKey());
+                    TopKMap.remove(TopKMap.lastKey());
                 }
             }
         }

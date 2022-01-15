@@ -76,8 +76,4 @@ public class TweetWritable implements Writable, Cloneable {
         out.writeInt(retweetCount);
         writeStringArray(out, hashtags);
     }
-
-    public String[] getHashtags() {
-        return hashtags;
-    }
 }

@@ -24,7 +24,7 @@ public class HashtagCount {
 
         public void map(LongWritable key, TweetWritable value, Context context) throws InterruptedException, IOException {
 
-            for (String hashtag : value.getHashtags()){
+            for (String hashtag : value.hashtags){
                 word.set(hashtag);
                 context.write(word, one);
             }

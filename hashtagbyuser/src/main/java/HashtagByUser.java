@@ -15,37 +15,38 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import java.io.IOException;
 import java.util.*;
 
-import static java.lang.String.CASE_INSENSITIVE_ORDER;
+import static java.lang.String.*;
 
 public class HashtagByUser {
 
-    public static class HashtagByUserMapper extends Mapper<LongWritable, TweetWritable, LongWritable, UserWritable> {
+    public static class HashtagByUserMapper extends Mapper<LongWritable, TweetWritable, UserWritable, Text> {
         private final Gson gson = new GsonBuilder().create();
 
         @Override
-        public void map(LongWritable key, TweetWritable tweet, Context context) throws IOException, InterruptedException {
-            context.write(new LongWritable(tweet.userId), new UserWritable(tweet.userName, gson.toJson(tweet.hashtags)));
+        public void map(LongWritable key, TweetWritable value, Context context) throws IOException, InterruptedException {
+            String[] hashtags = value.hashtags;
+            String jsonArray = gson.toJson(hashtags);
+            context.write(new UserWritable(value.userId, value.userName), new Text(jsonArray));
         }
     }
 
-    public static class HashtagByUserReducer extends Reducer<LongWritable, UserWritable, LongWritable, UserWritable> {
+    public static class HashtagByUserReducer extends Reducer<UserWritable, Text, UserWritable, Text> {
         private final Gson gson = new GsonBuilder().create();
 
         @Override
-        protected void reduce(LongWritable userId, Iterable<UserWritable> values, Context context) throws IOException, InterruptedException {
+        protected void reduce(UserWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 
-            SortedSet<String> union = new TreeSet<>(CASE_INSENSITIVE_ORDER);
+            SortedSet<String> sortedSet = new TreeSet<>(CASE_INSENSITIVE_ORDER);
 
             // For each tweet of a user.
-            String username = null;
-            for (UserWritable tweet : values) {
-                username = tweet.userName;
+            for (Text jsonArray : values) {
+                String[] hashtags = gson.fromJson(jsonArray.toString(), String[].class);
 
                 // For each hashtags of a tweet.
-                union.addAll(Arrays.asList(gson.fromJson(tweet.hashtags, String[].class)));
+                sortedSet.addAll(Arrays.asList(hashtags));
             }
 
-            context.write(userId, new UserWritable(username, gson.toJson(union)));
+            context.write(key, new Text(gson.toJson(sortedSet)));
         }
     }
 
@@ -60,8 +61,8 @@ public class HashtagByUser {
         job.setReducerClass(HashtagByUserReducer.class);
         job.setNumReduceTasks(6);
 
-        job.setOutputKeyClass(LongWritable.class);
-        job.setOutputValueClass(UserWritable.class);
+        job.setOutputKeyClass(UserWritable.class);
+        job.setOutputValueClass(Text.class);
 
         job.setInputFormatClass(SequenceFileInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
@@ -76,4 +77,5 @@ public class HashtagByUser {
 
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
+
 }

@@ -20,13 +20,11 @@ public class HashtagCount {
     public static class WordCountMapper extends Mapper<LongWritable, TweetWritable, Text, IntWritable> {
 
         private final IntWritable one = new IntWritable(1);
-        private final Text word = new Text();
 
         public void map(LongWritable key, TweetWritable value, Context context) throws InterruptedException, IOException {
 
             for (String hashtag : value.hashtags){
-                word.set(hashtag);
-                context.write(word, one);
+                context.write(new Text(hashtag), one);
             }
         }
     }

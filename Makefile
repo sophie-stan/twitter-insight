@@ -28,7 +28,7 @@ send:
 
 
 # Individual packaging
-.PHONY: datacleaning wordcount topk hashtagbyuser
+.PHONY: datacleaning wordcount topk hashtagbyuser triplets
 
 datacleaning:
 	cd $@ && mvn clean package && cp $(TAR_FILE) ../$(INSTALL_DIR)
@@ -40,6 +40,9 @@ topk:
 	cd $@ && mvn clean package && cp $(TAR_FILE) ../$(INSTALL_DIR)
 
 hashtagbyuser:
+	cd $@ && mvn clean package && cp $(TAR_FILE) ../$(INSTALL_DIR)
+
+triplets:
 	cd $@ && mvn clean package && cp $(TAR_FILE) ../$(INSTALL_DIR)
 
 export:

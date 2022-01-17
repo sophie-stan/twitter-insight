@@ -4,7 +4,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 /**
  * @original author
- * Sophie Stan & Deborah Perreira
+ * Sophie Stan & Deborah Pereira
  */
 
 public final class Utils {

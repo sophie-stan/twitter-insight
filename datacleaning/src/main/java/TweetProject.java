@@ -9,7 +9,7 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 /**
  * @original author
- * Sophie Stan & Deborah Perreira
+ * Sophie Stan & Deborah Pereira
  * @modified by David Auber
  */
 

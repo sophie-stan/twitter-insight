@@ -1,11 +1,13 @@
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,14 +30,10 @@ public class TweetMapper extends Mapper<LongWritable, Text, LongWritable, TweetW
             boolean isRT = Utils.getJSONObjectOrNull(jsonObject, "retweeted_status") != null;
             int retweetCount = jsonObject.getInt("retweet_count");
 
-            ArrayList<String> hashtags = new ArrayList<>();
-
-            Matcher matcher = Pattern.compile("#\\s*(\\w+)").matcher(text);
-            while (matcher.find()) {
-                hashtags.add(matcher.group(1));
-            }
-
-            String[] arrayHashtags = hashtags.toArray(new String[0]);
+            JSONObject entities = Utils.getJSONObjectOrNull(jsonObject, "entities");
+            JSONArray jsonHashtags = Utils.getJSONArrayOrNull(entities, "hashtags");
+            List<String> listHashtags = Utils.getHashtags(jsonHashtags);
+            String[] arrayHashtags = listHashtags.toArray(new String[0]);
 
             context.write(new LongWritable(id),
                     new TweetWritable(id,

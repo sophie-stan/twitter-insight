@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.bigdata</groupId>
-    <artifactId>Projet-Tweeter</artifactId>
+    <artifactId>Projet-Tweeter-TopHashtags</artifactId>
     <version>1.0</version>
     <name>Top Hashtags</name>
 
@@ -35,7 +35,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>TopHashtag</mainClass>
+                            <mainClass>HashtagTop</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

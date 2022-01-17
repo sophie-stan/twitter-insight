@@ -8,7 +8,7 @@ import static org.apache.hadoop.io.WritableUtils.*;
 
 /**
  * @original author
- * Sophie Stan & Deborah Perreira
+ * Sophie Stan & Deborah Pereira
  * @modified by David Auber
  */
 

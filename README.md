@@ -1,7 +1,7 @@
 # Twitter Insight
 
 Student project, one-month tweets analysis using Hadoop framework.
-The project is cut into 5 different packages:
+The project is divided into 5 different packages:
 - `datacleaning`: clean the raw data
 
 - `wordcount`: list of hashtags and their number of occurrences
@@ -19,7 +19,7 @@ The project is cut into 5 different packages:
 
 Go to the project root.
 
-`make build`: package the modules all at once.
+`make build`: packages the modules all at once.
 
 If you prefer to package the modules one by one:
 - `make datacleaning`
@@ -45,15 +45,13 @@ By default K=10.
 
 ### Data Mining
 
-`yarn jar Projet-Tweeter-HashtagByUser-1.0.jar clean_data hashtag_by_user`: produces 1 output folder `count_hashtags`.
-
-`hdfs dfs -text hashtag_by_user/part-r-<>`: Visualize the users (userId, userName) and their hashtags.
+- `yarn jar Projet-Tweeter-HashtagByUser-1.0.jar clean_data hashtag_by_user`: produces 1 output folder `count_hashtags`.
+- `hdfs dfs -text hashtag_by_user/part-r-<>`: Visualize the users (userId, userName) and their hashtags.
 
 ### Social Network
 
-`yarn jar Projet-Tweeter-HashtagByUser-1.0.jar hashtag_by_user hashtag_triplets`: produces 1 output folder `count_hashtags`.
-
-`hdfs dfs -text count_hashtags/part-r-<>`: Visualize the triplets of hashtags and their users.
+- `yarn jar Projet-Tweeter-HashtagByUser-1.0.jar hashtag_by_user hashtag_triplets`: produces 1 output folder `count_hashtags`.
+- `hdfs dfs -text count_hashtags/part-r-<>`: Visualize the triplets of hashtags and their users.
 
 // TODO: wordcount and topk on top of the triplets
 

@@ -45,5 +45,8 @@ hashtagbyuser:
 triplets:
 	cd $@ && mvn clean package && cp $(TAR_FILE) ../$(INSTALL_DIR)
 
+tripletanalysis:
+	cd $@ && mvn clean package && cp $(TAR_FILE) ../$(INSTALL_DIR)
+
 export:
 	scp -r $(INSTALL_DIR) $(ID)@ssh.enseirb-matmeca.fr:.

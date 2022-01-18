@@ -42,7 +42,7 @@ public class Triplets {
 
             for (Text user: users) {
                 size++;
-                if(size > 10) {
+                if(size > 100) {
                     return true;
                 }
             }

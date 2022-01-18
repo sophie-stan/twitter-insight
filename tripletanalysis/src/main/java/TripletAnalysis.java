@@ -1,5 +1,6 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -27,7 +28,7 @@ public class TripletAnalysis {
         job1.setReducerClass(IntSumReducer.class);
         job1.setNumReduceTasks(38);
         job1.setOutputKeyClass(Text.class);
-        job1.setOutputValueClass(Text.class);
+        job1.setOutputValueClass(IntWritable.class);
 
         job1.setInputFormatClass(SequenceFileInputFormat.class);
         job1.setOutputFormatClass(SequenceFileOutputFormat.class);

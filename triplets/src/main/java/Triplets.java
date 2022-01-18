@@ -10,7 +10,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,28 +20,27 @@ import static java.lang.String.CASE_INSENSITIVE_ORDER;
 
 public class Triplets {
 
-    public static class CleanTripletsMapper extends Mapper<Text,Text,Text,Text> {
+    public static class CleanTripletsMapper extends Mapper<Text, Text, Text, Text> {
         private final Gson gson = new GsonBuilder().create();
 
         @Override
         public void map(Text user, Text jsonHashtags, Context context) throws IOException, InterruptedException {
             String[] hashtags = gson.fromJson(jsonHashtags.toString(), String[].class);
 
-            for(String hashtag : hashtags) {
+            for (String hashtag : hashtags) {
                 context.write(new Text(hashtag), new Text(user));
             }
         }
     }
 
     public static class CleanTripletsReducer extends Reducer<Text, Text, Text, Text> {
-        private final Gson gson = new GsonBuilder().create();
 
         boolean isSizeGreater(Iterable<Text> users) {
             int size = 0;
 
-            for (Text user: users) {
+            for (Text ignored : users) {
                 size++;
-                if(size > 100) {
+                if (size > 100) {
                     return true;
                 }
             }
@@ -51,19 +49,19 @@ public class Triplets {
 
         @Override
         protected void reduce(Text hashtag, Iterable<Text> users, Context context) throws IOException, InterruptedException {
-            if(isSizeGreater(users)) {
-                for(Text user: users) {
+            if (isSizeGreater(users)) {
+                for (Text user : users) {
                     context.write(hashtag, new Text(user));
                 }
             }
         }
     }
 
-    public static class HashtagByUserTripletsMapper extends Mapper<Text,Text,Text,Text> {
+    public static class HashtagByUserTripletsMapper extends Mapper<Text, Text, Text, Text> {
 
         @Override
         public void map(Text hashtag, Text user, Context context) throws IOException, InterruptedException {
-                context.write(user, hashtag);
+            context.write(user, hashtag);
         }
     }
 
@@ -76,9 +74,10 @@ public class Triplets {
             for (Text hashtag : jsonHashtags) {
                 hashtags.add(String.valueOf(hashtag));
             }
-            context.write(user,new Text(gson.toJson(hashtags)));
+            context.write(user, new Text(gson.toJson(hashtags)));
         }
     }
+
     public static class TripletsMapper extends Mapper<Text, Text, Text, Text> {
         private final Gson gson = new GsonBuilder().create();
 
@@ -168,13 +167,13 @@ public class Triplets {
         job.setJarByClass(Triplets.class);
         job.setMapperClass(TripletsMapper.class);
         job.setReducerClass(TripletsReducer.class);
-        job.setNumReduceTasks(20); // We only work on one output file coming from the word count
+        job.setNumReduceTasks(38);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
         job.setInputFormatClass(SequenceFileInputFormat.class);
-        job.setOutputFormatClass(TextOutputFormat.class);
+        job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
         FileInputFormat.addInputPath(job, new Path(args[2]));
         FileOutputFormat.setOutputPath(job, new Path(args[3]));

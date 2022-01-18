@@ -12,8 +12,6 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.reduce.IntSumReducer;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class HashtagCount {
 
@@ -23,7 +21,7 @@ public class HashtagCount {
 
         public void map(LongWritable key, TweetWritable value, Context context) throws InterruptedException, IOException {
 
-            for (String hashtag : value.hashtags){
+            for (String hashtag : value.hashtags) {
                 context.write(new Text(hashtag), one);
             }
         }

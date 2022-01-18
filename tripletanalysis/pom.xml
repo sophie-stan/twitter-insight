@@ -5,7 +5,7 @@
     <groupId>org.bigdata</groupId>
     <artifactId>Projet-Tweeter-TripletsAnalysis</artifactId>
     <version>1.0</version>
-    <name>Triplets</name>
+    <name>TripletsAnalysis</name>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
